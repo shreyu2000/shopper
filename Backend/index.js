@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 4000;
-const mongoose =require('mongoose')
+const mongoose =require('mongoose');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
@@ -16,6 +16,7 @@ const productRoute = require('./routes/product.js');
 //request willbe automatically parsed through json
 app.use(express.json());
 app.use(cors());
+
 
 //apis
 app.get("/",(req,res)=>{
@@ -47,6 +48,8 @@ app.post("/upload" ,upload.single('product') ,(req,res)=>{
 
 //createproduct route
 app.use(productRoute);
+
+//other apis 
 
 
 app.listen(PORT ,(error)=>{

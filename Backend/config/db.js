@@ -4,7 +4,7 @@ dotenv.config();
 
 const db=mongoose.connect(process.env.MONGODB_URI)
 .then(()=>{
-  console.log("DB Connected")
+  console.log("Database Connected")
 }).catch((err)=> {
   console.log("Failed to connect",err)
 });

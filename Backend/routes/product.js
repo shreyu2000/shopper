@@ -1,5 +1,4 @@
 // Your existing route file
-
 const express = require("express");
 const router = express.Router();
 const Product = require("../models/product.model"); // Adjust the path based on your project structure
@@ -9,11 +8,22 @@ const Product = require("../models/product.model"); // Adjust the path based on 
 //addproduct api 
 router.post("/addproduct", async (req, res) => {
   try {
-    const { id, name, image, category, new_price, old_price } = req.body;
+    let products = await Product.find({});
+    let id;
+    if(products.length >0){
+        let last_product_array = products.slice(-1);
+        let last_product = last_product_array[0];
+        id = last_product.id +1;
+    }
+    else{
+        id = 1;
+    }
+
+    const {name, image, category, new_price, old_price } = req.body;
 
     // Create a new instance of the Product model
     const product = new Product({
-      id,
+      id:id,
       name,
       image,
       category,
@@ -32,5 +42,59 @@ router.post("/addproduct", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+
+
+
+//creating api for deleting products
+
+// router.post("/removeproduct" , async(req,res)=>{
+//     await Product.findOneAndDelete({id:req.body.id});
+//     console.log("Removed");
+//     res.json({
+//         success:true,
+//         name:req.body.name
+//     })
+// })
+
+router.post("/removeproduct", async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    // Validate if the ID is provided
+    if (!id) {
+      return res.status(400).json({ error: "Bad Request - Missing ID" });
+    }
+
+    // Use findOneAndDelete to find the product by its id and remove it
+    const deletedProduct = await Product.findOneAndDelete({ id:req.body.id });
+
+    if (!deletedProduct) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    console.log(`Product "${deletedProduct.name}" removed successfully`);
+    res.json({
+      success: true,
+      name: deletedProduct.name,
+    });
+  } catch (error) {
+    console.error("Error:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+
+//creating api for getting all products 
+
+router.get("/allproducts" ,async(req,res)=>{
+    let products = await Product.find({});
+    console.log("All products fetched");
+    res.send(products);
+
+})
+
+
 
 module.exports = router;
