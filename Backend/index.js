@@ -1,17 +1,16 @@
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 4000;
-const mongoose =require('mongoose');
-const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
 const cors = require("cors");
-const exp = require('constants');
+// const exp = require('constants');
 const dotenv = require('dotenv');
 dotenv.config();
 const db = require('./config/db.js');
 const productRoute = require('./routes/product.js');
-
+const userRoutes = require('./routes/user.js');
+const cartRoute =require('./routes/cart.js')
 
 //request willbe automatically parsed through json
 app.use(express.json());
@@ -50,6 +49,8 @@ app.post("/upload" ,upload.single('product') ,(req,res)=>{
 app.use(productRoute);
 
 //other apis 
+app.use(userRoutes);
+app.use(cartRoute);
 
 
 app.listen(PORT ,(error)=>{

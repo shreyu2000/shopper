@@ -60,6 +60,7 @@
 .loginsignup-login span{
     color: #ff4141;
     font-weight: 600;
+    cursor: pointer;
 
 }
 
@@ -82,7 +83,7 @@
     .loginsignup-container{
         width: auto;
         max-width: 500px;
-        max-height: 500px;
+        max-height: 600px;
     }
     .loginsignup-container h1{
         margin: 10px 0px;
