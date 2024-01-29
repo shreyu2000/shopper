@@ -16,7 +16,7 @@ const cartRoute = require('./routes/cart.js');
 // Create a new instance of the Storage class
 const storage = new Storage({
   projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
-  keyFilename: path.join(__dirname,'./storageACKey/sakey.json'), // Replace with the path to your service account key file
+  keyFilename: path.join(__dirname, './storageACKey/sakey.json'), // Replace with the path to your service account key file
 });
 
 // Get a reference to the bucket
@@ -58,13 +58,13 @@ app.post("/upload", upload.single('product'), async (req, res) => {
     // Handle errors during the upload
     stream.on('error', (err) => {
       console.error('Error uploading to GCS:', err);
-      res.status(500).json({ success: 0, message: 'Internal server error' });
+      res.status(500).json({ success: 0, message: 'Internal server error during image upload' });
     });
 
     // Handle the finish event after the image is uploaded successfully
     stream.on('finish', async () => {
       // Get the public URL of the uploaded image
-      const imageUrl = `https://storage.googleapis.com/${bucket.name}/${file.name}`;
+      const imageUrl = `https://storage.googleapis.com/${shopperbucket}/${file.name}`;
 
       // Send the success response with the image URL
       res.json({
@@ -77,7 +77,7 @@ app.post("/upload", upload.single('product'), async (req, res) => {
     stream.end(req.file.buffer);
   } catch (error) {
     console.error('Error during image upload:', error);
-    res.status(500).json({ success: 0, message: 'Internal server error' });
+    res.status(500).json({ success: 0, message: 'Internal server error during image upload' });
   }
 });
 
