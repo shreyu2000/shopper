@@ -64,7 +64,7 @@ app.post("/upload", upload.single('product'), async (req, res) => {
     // Handle the finish event after the image is uploaded successfully
     stream.on('finish', async () => {
       // Get the public URL of the uploaded image
-      const imageUrl = `https://storage.googleapis.com/${shopperbucket}/${file.name}`;
+      const imageUrl = `https://storage.googleapis.com/${bucket.name}/${file.name}`;
 
       // Send the success response with the image URL
       res.json({

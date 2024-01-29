@@ -1,0 +1,14 @@
+{
+    "type": "service_account",
+    "project_id": "axial-potential-412709",
+    "private_key_id": "ae9b869bd18d93cec7af15df85cc633910f9ac35",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC4o6N2jS7CTJrj\nykGMev4iWhZa1VnV2gBb+z2J7zpXYG6fwxjJu+oBGr/x5LQhxAnfoJtWUJDyPLrc\nrd/bU0WNtclIubBezfRo+U32T0Mehvb+KmTSbQq57RfWG0njtxO8grbbtszW1ISZ\ndNW6rTPMPlt8GErQofEVrv4IC+yLoZpa81opuwpN6siXTlkwIlxHhu9AJM+OA97t\nEifxfRYiSDGhsp09PwGnBwXcSb70qLrM+Urf7XOXENrzu0eV+zVbZtj8lMXW1kLb\nqP646dmRTbJIHLdux6uHaxZj7jYwQUrgsh1AOUU8Q70qcA2eea2kYA8Z7w1kEFNk\nwBWTIFG3AgMBAAECggEAEIUcbux/edH2n8y5l0Y5e70mUX06VI7bR/kpAeQXvh6g\nkNNlyEYm0AkV+G1Q8p51wn6K6qrUG5OODCJtRe3jtyPdlql9wfwln8jPWwTir/xw\nyyZKFaVWkT98Scm9dc4SsLCo7lKjB2usHrppFXlB8HnGn+OtufbRuVg9XiuKJnOP\n3gnNl+qt4knrGYn3RHAVIW7DiUjGuHtP7SQPbY4kfHw65MMJYH/LfP0HSYFw318O\nq+HIlvw0JoZGOQezTCsYTCNY2do1T3t2ip+39b5Qkemu1iHgUdN8u4i8t6vY33RR\nud2xhgI6NOyPgMiWPS8+Kgs5j9fP+Y/1QVRK2TM/jQKBgQDw4YNYWCl1MQC5MEq2\nrxK62yIOaeig0Nb91Ve88z0+l5qStzkN9GYYXA7RdIDVpBtI7KomgGp2p0sawlBd\nEqKVf3TfvBPilvIaTIaJeD++9cHBvGry+gMJZ8ijc/ZeLQfPvFVQgftWiKevWlJ5\npCRY1oDEAxRurS31n+cIDsudTQKBgQDEOm5TKqISfh6lss1pJUEAOz5eVvUDxayW\nrc3+6WHGnlUgQ1yzJN+9colVzXkLKHxhmT+OqBS9fI+lq5udqHpfuTVnko+whNVc\njpB9uDlmKoM7Y4B7xgDIiIi1xzA2sdCi2ZwTDPOV9qy8Et2I1Ci/32tGbqyPPjGD\nj2vDezO5EwKBgDlRwHqGSB898OkgZ7b/BBr4yCrb4uJZr78pRD6PNxSs6Lhe5zG9\n5YmIZnJLIdk0utVok7ijuDHR71pHwO3U4GFoufv/ek/iEWxWp3EQ70JWoquiVWTK\nP2y+iIz0rDyOxJwXOcn1lERsMlLU0GlnuMp3CJ8cCIGprhUT3tsZAjTFAoGAKRU2\nrfDaF9cR4Y0q1l23Wy4MI8I+7/g95xoia8E++E+D8QpJaTRKJ6bIPA+VzRE/4Ust\ndFeaaAWhKYVhQkPYwxvKo5GaxdE5vnQWqkucsNgru45cgw10coerX6uBW6Ik1UOM\nGqz2fqozhfjJKvGISoujMQ7Qz/iscyfe3wF3VcMCgYEAszDqQc5+otzoX+ryuTq/\nFVIGXPGehvzZgKoS1mg75nBcj1jYdcfC31BXp4go3uDzfF/uDxDfxgHhfCXLJg6K\nl7R7JNAPBpzACG2OxBQa36bX0P6Td3kCNdVrQx3iDtJrve2epZvJANvVr0MrR/Hf\nJkm/v2YxVbb/XAXqN/l5C6o=\n-----END PRIVATE KEY-----\n",
+    "client_email": "shopper-storage@axial-potential-412709.iam.gserviceaccount.com",
+    "client_id": "116681129697035820343",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/shopper-storage%40axial-potential-412709.iam.gserviceaccount.com",
+    "universe_domain": "googleapis.com"
+  }
+  
