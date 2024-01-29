@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "./AddProduct.css";
 import upload_area from "../../assets/upload_area.svg";
+import config from '../../../config/config' // Adjust the path accordingly
+
 
 const AddProduct = () => {
   const [image, setImage] = useState(false);
@@ -29,7 +31,7 @@ const AddProduct = () => {
     formData.append("product", image);
 
     try {
-        const responseUpload = await fetch("http://localhost:4000/upload", {
+        const responseUpload = await fetch(`${config.apiUrl}/upload`, {
             method: "POST",
             headers: {
                 Accept: "application/json",
@@ -49,7 +51,7 @@ const AddProduct = () => {
             product.image = responseData.image_url;
             console.log(product);
 
-            const responseAddProduct = await fetch("http://localhost:4000/addproduct", {
+            const responseAddProduct = await fetch(`${config.apiUrl}/addproduct`, {
                 method: "POST",
                 headers: {
                     Accept: "application/json",
