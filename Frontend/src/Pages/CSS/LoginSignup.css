@@ -76,6 +76,19 @@
 
 }
 
+/* Add these styles to your CSS file */
+
+.error {
+    border: 1px solid #ff0000; /* Red border for error */
+  }
+  
+  .error-text {
+    color: #ff0000; /* Red text color for error messages */
+    font-size: 14px; /* Adjust font size as needed */
+    margin-top: 2px; /* Add some space above the error text */
+  }
+  
+
 @media(max-width:1280px){
     .loginsignup{
         padding-top: 50px;

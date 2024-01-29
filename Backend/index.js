@@ -4,7 +4,6 @@ const PORT = process.env.PORT || 4000;
 const multer = require('multer');
 const path = require('path');
 const cors = require("cors");
-// const exp = require('constants');
 const dotenv = require('dotenv');
 dotenv.config();
 const db = require('./config/db.js');

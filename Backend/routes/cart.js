@@ -48,5 +48,14 @@ router.post("/removefromcart", fetchUser, async (req, res) => {
 });
 
 
+//creating end point to get cart data
+
+router.post('/getcart' ,fetchUser, async(req,res)=>{
+    console.log("GetCart");
+    let userData = await Users.findOne({_id:req.user.id});
+    res.json(userData.cartData);
+})
+
+
 module.exports = router;
 
