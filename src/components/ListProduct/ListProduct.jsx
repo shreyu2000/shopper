@@ -1,37 +1,46 @@
 import React, { useEffect, useState } from "react";
 import "./ListProduct.css";
-import cross_icon from '../../assets/cross_icon.png'
-import config from '../../../config/config' // Adjust the path accordingly
-
+import cross_icon from '../../assets/cross_icon.png';
+import config from '../../../config/config'; // Adjust the path accordingly
 
 const ListProduct = () => {
-  const [allproducts, setAllProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
 
-  const fetchInfo = async () => {
-    await fetch(`${config.apiUrl}/allproducts`)
-      .then((res) => res.json())
-      .then((data) => {
-        setAllProducts(data);
-      });
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch(`${config.apiUrl}/allproducts`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch products');
+      }
+      const data = await response.json();
+      setAllProducts(data);
+    } catch (error) {
+      console.error('Error fetching products:', error.message);
+    }
   };
 
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
-  useEffect(()=>{
-    fetchInfo();
-  },[]);
-
-    const remove_product = async(id) =>{
-        await fetch(`${config.apiUrl}/removeproduct`,{
-          method:"POST",
-          headers:{
-            Accept:"application/json",
-            'Content-Type':'application/json',
-          },
-          body:JSON.stringify({id:id})
-        })
-        await fetchInfo();
+  const removeProduct = async (id) => {
+    try {
+      const response = await fetch(`${config.apiUrl}/removeproduct`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: id }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to remove product');
+      }
+      await fetchProducts();
+    } catch (error) {
+      console.error('Error removing product:', error.message);
     }
-
+  };
 
   return (
     <div className="list-product">
@@ -46,24 +55,16 @@ const ListProduct = () => {
       </div>
       <div className="listproduct-allproducts">
         <hr />
-        {
-          allproducts.map((product ,index)=>{
-            return( <>
-              <div key={index} className="listproduct-format-main listproduct-format">
-                <img src={product.image} alt="" className="listproduct-product-icon" />
-                <p>{product.name}</p>
-                <p>${product.old_price}</p>
-                <p>${product.new_price}</p>
-                <p>{product.category}</p>
-                <img onClick={()=>{remove_product(product.id)}} className="listproduct-remove-icon" src={cross_icon}/>
-              </div>
-              <hr/>
-
-              </>
-
-            )
-          })
-        }
+        {allProducts.map((product, index) => (
+          <div key={index} className="listproduct-format-main listproduct-format">
+            <img src={product.image} alt="" className="listproduct-product-icon" />
+            <p>{product.name}</p>
+            <p>${product.old_price}</p>
+            <p>${product.new_price}</p>
+            <p>{product.category}</p>
+            <img onClick={() => removeProduct(product.id)} className="listproduct-remove-icon" src={cross_icon} alt="Remove" />
+          </div>
+        ))}
       </div>
     </div>
   );
