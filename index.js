@@ -7,7 +7,7 @@ const { Storage } = require('@google-cloud/storage');
 
 const storage = new Storage({
   projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
-  keyFilename: path.join(__dirname, 'path-to-your-service-account-key.json'), // Replace with the path to your service account key file
+  keyFilename: path.join(__dirname, 'storageACKey/sakey.json'), // Replace with the path to your service account key file
 });
 
 const bucket = storage.bucket('shopper-bucket1'); // Replace with your bucket name
