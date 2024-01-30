@@ -74,3 +74,125 @@ app.post("/upload", upload.single('product'), async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+const { Storage } = require('@google-cloud/storage');
+
+const uploadDir = path.join(__dirname, './uploads');
+router.use('/uploads', express.static(uploadDir));
+
+const storage = new Storage({
+  projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
+  keyFilename: path.join(__dirname, 'storageACKey', 'sakey.json'),
+});
+const bucket = storage.bucket('shopper-bucket1'); // Replace with your bucket name
+const upload = multer({ dest: uploadDir }); // Update destination to use the absolute path
+
+router.post('/upload', protectedResource, upload.single('product'), async (req, res) => {
+  console.log('inside route');
+  const { productName, productPrice, productDescription } = req.body;
+
+  if (!productName || !productPrice || !productDescription) {
+    console.log('Missing fields');
+    return res.status(400).json({ message: 'One or more fields are empty' });
+  }
+
+  const file = req.file;
+
+  if (!file) {
+    return res.status(400).json({ message: 'No file uploaded' });
+  }
+
+  try {
+    const filePath = path.join(uploadDir, file.filename);
+
+    // Upload the file to Google Cloud Storage
+    const remoteFileName = `${Date.now()}_${file.originalname}`;
+    const remoteFile = bucket.file(remoteFileName);
+
+    console.log('after file upload gc');
+
+    fs.createReadStream(filePath)
+      .pipe(remoteFile.createWriteStream())
+      .on('error', (err) => {
+        console.error(err);
+        return res.status(500).json({ message: 'Error uploading file. Please try again.' });
+      })
+      .on('finish', async () => {
+        // Delete the local file after successful upload
+        fs.unlinkSync(filePath);
+
+        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${remoteFileName}`;
+
+        // Save product information to the database
+        const productObj = new ProductModel({
+          productName,
+          productPrice,
+          productDescription,
+          product: publicUrl,
+          cartQuantity: 1,
+        });
+
+        const newProduct = await productObj.save();
+        console.log('Product added');
+        res.status(201).json({ product: newProduct });
+      });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'An error occurred while adding the product' });
+  }
+});
+router.post('/addfeatured', protectedResource, upload.single('product'), async (req, res) => {
+  console.log('inside route');
+  const { productName, productPrice, productDescription } = req.body;
+
+  if (!productName || !productPrice || !productDescription) {
+    console.log('Missing fields');
+    return res.status(400).json({ message: 'One or more fields are empty' });
+  }
+
+  const file = req.file;
+
+  if (!file) {
+    return res.status(400).json({ message: 'No file uploaded' });
+  }
+
+  try {
+    const filePath = path.join(uploadDir, file.filename);
+
+    // Upload the file to Google Cloud Storage
+    const remoteFileName = `${Date.now()}_${file.originalname}`;
+    const remoteFile = bucket.file(remoteFileName);
+
+    console.log('after file upload gc');
+
+    fs.createReadStream(filePath)
+      .pipe(remoteFile.createWriteStream())
+      .on('error', (err) => {
+        console.error(err);
+        return res.status(500).json({ message: 'Error uploading file. Please try again.' });
+      })
+      .on('finish', async () => {
+        // Delete the local file after successful upload
+        fs.unlinkSync(filePath);
+
+        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${remoteFileName}`;
+
+        // Save product information to the database
+        const productObj = new FeaturedProductModel({
+          productName,
+          productPrice,
+          productDescription,
+          product: publicUrl,
+          cartQuantity: 1,
+        });
+
+        const newProduct = await productObj.save();
+        console.log('Product added');
+        res.status(201).json({ product: newProduct });
+      });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'An error occurred while adding the product' });
+  }
+});
+
