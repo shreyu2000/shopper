@@ -5,56 +5,77 @@ const multer = require('multer');
 const path = require('path');
 const cors = require("cors");
 const dotenv = require('dotenv');
+const { Storage } = require('@google-cloud/storage'); // Import Google Cloud Storage SDK
 dotenv.config();
 const db = require('./config/db.js');
 const productRoute = require('./routes/product.js');
 const userRoutes = require('./routes/user.js');
-const cartRoute =require('./routes/cart.js')
+const cartRoute = require('./routes/cart.js');
 
-//request willbe automatically parsed through json
+// Initialize Google Cloud Storage
+const storage = new Storage({
+  projectId: process.env.GCLOUD_PROJECT_ID,
+  keyFilename: path.join(__dirname, '/storageACKey/sakey.json'),
+});
+const bucketName = process.env.GCS_BUCKET_NAME;
+
+// Request will be automatically parsed through json
 app.use(express.json());
 app.use(cors());
 
-
-//apis
+// APIs
 app.get("/",(req,res)=>{
     res.send("Express app  Running");
-})
+});
 
+// Image Storing ENGINE using multer
+// Configuration
+const multerStorage = multer.memoryStorage(); // Use memory storage for uploading to GCS
 
-//Image Storing ENGINE use multer 
-//configuration 
-const storage = multer.diskStorage({
-    destination:"./upload/images",
-    filename:(req ,file ,cb)=>{
-        return cb(null,`${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`)
+const upload = multer ({storage: multerStorage});
+
+// Creating upload endpoint for images
+app.post("/upload" ,upload.single('product') , async (req,res) => {
+    const file = req.file;
+
+    if (!file) {
+        return res.status(400).json({ success: 0, message: "No file uploaded." });
     }
-})
 
-const upload = multer ({storage:storage})
+    const bucket = storage.bucket(bucketName);
+    const gcsFileName = `${Date.now()}_${file.originalname}`;
+    const fileUpload = bucket.file(gcsFileName);
 
-//creating upload endpoint for images 
-app.use('/images' , express.static('upload/images'));
-app.post("/upload" ,upload.single('product') ,(req,res)=>{
-    res.json({
-        success:1,
-        image_url :`http://localhost:${PORT}/images/${req.file.filename}`,
+    const stream = fileUpload.createWriteStream({
+        metadata: {
+            contentType: file.mimetype
+        },
+        resumable: false
+    });
 
-    })
-})
+    stream.on('error', err => {
+        console.error('Upload stream error:', err);
+        return res.status(500).json({ success: 0, message: "Failed to upload file." });
+    });
 
+    stream.on('finish', () => {
+        const imageUrl = `https://storage.googleapis.com/${bucketName}/${gcsFileName}`;
+        res.json({ success: 1, image_url: imageUrl });
+    });
 
-//createproduct route
+    stream.end(file.buffer);
+});
+
+// Create product route
 app.use(productRoute);
 
-//other apis 
+// Other APIs 
 app.use(userRoutes);
 app.use(cartRoute);
 
-
-app.listen(PORT ,(error)=>{
+app.listen(PORT ,(error) => {
     if(error){
-        console.log('Error ' ,error)
+        console.log('Error ' ,error);
     }
-    console.log(`Server Running on port ${PORT}`)
-})
+    console.log(`Server Running on port ${PORT}`);
+});
