@@ -4,33 +4,42 @@ const PORT = process.env.PORT || 4000;
 const multer = require('multer');
 const path = require('path');
 const { Storage } = require('@google-cloud/storage');
+const cors = require("cors");
+const dotenv = require('dotenv');
+dotenv.config();
 
+app.use(express.json());
+app.use(cors());
+
+// Initialize Google Cloud Storage
 const storage = new Storage({
   projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
-  keyFilename: path.join(__dirname, 'storageACKey', 'sakey.json'), // Corrected path
+  keyFilename: path.join(__dirname, 'storageACKey', 'sakey.json'),
 });
 
-const bucket = storage.bucket('shopper-bucket1');
+// Specify your GCS bucket name
+const bucketName = 'shopper-bucket1';
+const bucket = storage.bucket(bucketName);
 
+// Image upload configuration using Multer
 const multerStorage = multer.memoryStorage();
 const upload = multer({ storage: multerStorage });
 
-app.use(express.json());
-
-app.get('/', (req, res) => {
-  res.send('Express app running');
+app.get("/", (req, res) => {
+  res.send("Express app Running");
 });
 
-app.use('/images', express.static(path.join(__dirname, 'upload', 'images'))); // Corrected path
-
-app.post('/upload', upload.single('product'), async (req, res) => {
+// Endpoint for uploading images to GCS
+app.post("/upload", upload.single('product'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ success: 0, message: 'No image file provided' });
     }
 
-    const filename = `${req.file.fieldname}_${Date.now()}${path.extname(req.file.originalname)}`;
+    const filename = `${Date.now()}_${req.file.originalname}`;
     const file = bucket.file(filename);
+
+    // Create a writable stream to upload the file to GCS
     const stream = file.createWriteStream({
       metadata: {
         contentType: req.file.mimetype,
@@ -43,8 +52,8 @@ app.post('/upload', upload.single('product'), async (req, res) => {
       res.status(500).json({ success: 0, message: 'Internal server error' });
     });
 
-    stream.on('finish', async () => {
-      const imageUrl = `https://storage.googleapis.com/${bucket.name}/${file.name}`;
+    stream.on('finish', () => {
+      const imageUrl = `https://storage.googleapis.com/${bucket.name}/${filename}`;
       res.json({
         success: 1,
         image_url: imageUrl,
@@ -57,6 +66,10 @@ app.post('/upload', upload.single('product'), async (req, res) => {
     res.status(500).json({ success: 0, message: 'Internal server error' });
   }
 });
+
+// Your other routes and middleware
+// app.use('/products', productRoute);
+// app.use('/users', userRoute);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
