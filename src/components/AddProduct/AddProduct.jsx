@@ -26,10 +26,10 @@ const AddProduct = () => {
         alert("Please select an image.");
         return;
       }
-
+  
       const formData = new FormData();
       formData.append("product", image);
-
+  
       const responseUpload = await fetch(`${config.apiUrl}/upload`, {
         method: "POST",
         headers: {
@@ -37,16 +37,16 @@ const AddProduct = () => {
         },
         body: formData,
       });
-
+  
       if (!responseUpload.ok) {
         throw new Error(`Error uploading image: ${responseUpload.statusText}`);
       }
-
+  
       const responseData = await responseUpload.json();
-
+  
       if (responseData.success) {
         productDetails.image = responseData.image_url;
-
+  
         const responseAddProduct = await fetch(`${config.apiUrl}/addproduct`, {
           method: "POST",
           headers: {
@@ -55,19 +55,27 @@ const AddProduct = () => {
           },
           body: JSON.stringify(productDetails),
         });
-
+  
         if (!responseAddProduct.ok) {
           throw new Error(`Error adding product: ${responseAddProduct.statusText}`);
         }
-
+  
         const data = await responseAddProduct.json();
-
-        data.success ? alert("Product Added") : alert("Failed");
+  
+        if (data.success) {
+          alert("Product Added");
+        } else {
+          alert("Failed to add product.");
+        }
+      } else {
+        alert("Failed to upload image.");
       }
     } catch (error) {
       console.error("Error:", error.message);
+      alert("An error occurred. Please try again later.");
     }
   };
+  
 
   return (
     <div className="add-product">
