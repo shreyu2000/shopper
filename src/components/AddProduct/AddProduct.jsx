@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import "./AddProduct.css";
 import upload_area from "../../assets/upload_area.svg";
-import config from '../../../config/config'; // Adjust the path accordingly
+import config from '../../../config/config' // Adjust the path accordingly
+
 
 const AddProduct = () => {
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState(false);
   const [productDetails, setProductDetails] = useState({
     name: "",
+    image: "",
     category: "women",
     new_price: "",
     old_price: "",
@@ -20,62 +22,59 @@ const AddProduct = () => {
     setProductDetails({ ...productDetails, [e.target.name]: e.target.value });
   };
 
+  //adddata to database
   const Add_Product = async () => {
+    console.log(productDetails);
+    let responseData;
+    let product = productDetails;
+    let formData = new FormData();
+    formData.append("product", image);
+
     try {
-      if (!image) {
-        alert("Please select an image.");
-        return;
-      }
-  
-      const formData = new FormData();
-      formData.append("product", image);
-  
-      const responseUpload = await fetch(`${config.apiUrl}/upload`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-        },
-        body: formData,
-      });
-  
-      if (!responseUpload.ok) {
-        throw new Error(`Error uploading image: ${responseUpload.statusText}`);
-      }
-  
-      const responseData = await responseUpload.json();
-  
-      if (responseData.success) {
-        productDetails.image = responseData.image_url;
-  
-        const responseAddProduct = await fetch(`${config.apiUrl}/addproduct`, {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(productDetails),
+        const responseUpload = await fetch(`${config.apiUrl}/upload`, {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+            },
+            body: formData,
         });
-  
-        if (!responseAddProduct.ok) {
-          throw new Error(`Error adding product: ${responseAddProduct.statusText}`);
+
+        if (!responseUpload.ok) {
+            // Handle the error here if the upload request fails
+            console.error("Error uploading image:", responseUpload.statusText);
+            return;
         }
-  
-        const data = await responseAddProduct.json();
-  
-        if (data.success) {
-          alert("Product Added");
-        } else {
-          alert("Failed to add product.");
+
+        responseData = await responseUpload.json();
+
+        if (responseData.success) {
+            product.image = responseData.image_url;
+            console.log(product);
+
+            const responseAddProduct = await fetch(`${config.apiUrl}/addproduct`, {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(product),
+            });
+
+            if (!responseAddProduct.ok) {
+                // Handle the error here if the addproduct request fails
+                console.error("Error adding product:", responseAddProduct.statusText);
+                return;
+            }
+
+            const data = await responseAddProduct.json();
+
+            data.success ? alert("Product Added") : alert("Failed");
         }
-      } else {
-        alert("Failed to upload image.");
-      }
     } catch (error) {
-      console.error("Error:", error.message);
-      alert("An error occurred. Please try again later.");
+        console.error("Error:", error.message);
     }
-  };
-  
+};
+
 
   return (
     <div className="add-product">
@@ -127,7 +126,6 @@ const AddProduct = () => {
           <img
             src={image ? URL.createObjectURL(image) : upload_area}
             className="addproduct-thumnail-img"
-            alt="Upload Area"
           />
         </label>
         <input
@@ -139,7 +137,9 @@ const AddProduct = () => {
         />
       </div>
       <button
-        onClick={Add_Product}
+        onClick={() => {
+          Add_Product();
+        }}
         className="addproduct-btn"
       >
         ADD
