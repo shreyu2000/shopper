@@ -7,10 +7,10 @@ const { Storage } = require('@google-cloud/storage');
 
 const storage = new Storage({
   projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
-  keyFilename: path.join(__dirname, 'path-to-your-service-account-key.json'), // Replace with the path to your service account key file
+  keyFilename: path.join(__dirname, 'storageACKey', 'sakey.json'), // Corrected path
 });
 
-const bucket = storage.bucket('shopper-bucket1'); // Replace with your bucket name
+const bucket = storage.bucket('shopper-bucket1');
 
 const multerStorage = multer.memoryStorage();
 const upload = multer({ storage: multerStorage });
@@ -18,10 +18,10 @@ const upload = multer({ storage: multerStorage });
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.send('Express app Running');
+  res.send('Express app running');
 });
 
-app.use('/images', express.static('upload/images'));
+app.use('/images', express.static(path.join(__dirname, 'upload', 'images'))); // Corrected path
 
 app.post('/upload', upload.single('product'), async (req, res) => {
   try {
@@ -58,9 +58,6 @@ app.post('/upload', upload.single('product'), async (req, res) => {
   }
 });
 
-app.listen(PORT, (error) => {
-  if (error) {
-    console.log('Error ', error);
-  }
-  console.log(`Server Running on port ${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
